@@ -1,120 +1,114 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <title>RapidRelief </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<title>Rapid Relief</title>
-
-<meta name="viewport" content="width=device-width, initial-scale=1">
-
-<link rel="stylesheet" href="style.css">
-
+    <!-- CSS LINK -->
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
+<!-- NAVBAR -->
 <div class="navbar">
-
-<h2>🚑 RapidRelief</h2>
-
-<div>
-<a href="index.html">Home</a>
-<a href="report.html">Report</a>
-<a href="map.html">Map</a>
-<a href="dashboard.html">Dashboard</a>
+    <h2>🚑 RapidRelief</h2>
+    <div>
+        <a href="index.html">Home</a>
+        <a href="report.html">Report</a>
+        <a href="map.html">Map</a>
+        <a href="dashboard.html">Dashboard</a>
+    </div>
 </div>
 
-</div>
-
+<!-- HERO -->
 <div class="hero">
+    <h1>RapidRelief</h1>
+    <p>
+        AI-powered system connecting citizens, authorities,
+        and emergency resources for faster response.
+    </p>
 
-<h1>RapidRelief</h1>
-
-<p>
-AI-powered system connecting citizens, authorities,
-and emergency resources for faster response.
-</p>
-
-<div class="buttons">
-
-<a href="report.html">
-<button>🚨 Report Emergency</button>
-</a>
-
-<a href="map.html">
-<button>🗺 Resource Map</button>
-</a>
-
-<a href="dashboard.html">
-<button>📊 Authority Dashboard</button>
-</a>
-
+    <div class="buttons">
+        <a href="report.html"><button>🚨 Report Emergency</button></a>
+        <a href="map.html"><button>🗺 Resource Map</button></a>
+        <a href="dashboard.html"><button>📊 Authority Dashboard</button></a>
+    </div>
 </div>
 
-</div>
-
+<!-- FEATURES -->
 <div class="features">
 
-<div class="card">
-<h3>🧠 AI Priority Detection</h3>
-<p>AI analyzes emergency descriptions and assigns priority.</p>
+    <div class="card">
+        <h3>🧠 AI Priority Detection</h3>
+        <p>AI analyzes emergency descriptions and assigns priority.</p>
+    </div>
+
+    <div class="card">
+        <h3>📍 Smart Resource Map</h3>
+        <p>View nearby hospitals, ambulances and shelters.</p>
+    </div>
+
+    <div class="card">
+        <h3>🚑 Faster Response</h3>
+        <p>Authorities receive instant alerts.</p>
+    </div>
+
+    <div class="card">
+        <h3>🤖 AI Assistant</h3>
+        <p>Chatbot helps citizens during emergencies.</p>
+    </div>
+
 </div>
 
-<div class="card">
-<h3>📍 Smart Resource Map</h3>
-<p>View nearby hospitals, ambulances and shelters.</p>
-</div>
-
-<div class="card">
-<h3>🚑 Faster Response</h3>
-<p>Authorities receive instant alerts.</p>
-</div>
-
-<div class="card">
-<h3>🤖 AI Assistant</h3>
-<p>Chatbot helps citizens during emergencies.</p>
-</div>
-
-</div>
-
+<!-- STATS -->
 <div class="stats">
+    <div class="stat">
+        <h2>120+</h2>
+        <p>Emergencies</p>
+    </div>
 
-<div class="stat">
-<h2>120+</h2>
-<p>Emergencies</p>
+    <div class="stat">
+        <h2>45</h2>
+        <p>Ambulances</p>
+    </div>
+
+    <div class="stat">
+        <h2>32</h2>
+        <p>Hospitals</p>
+    </div>
 </div>
 
-<div class="stat">
-<h2>45</h2>
-<p>Ambulances</p>
-</div>
-
-<div class="stat">
-<h2>32</h2>
-<p>Hospitals</p>
-</div>
-
-</div>
-
+<!-- CHAT BUTTON -->
 <button class="chat-btn" onclick="toggleChat()">🤖</button>
 
+<!-- CHATBOX -->
 <div class="chatbox" id="chatbox">
 
-<b>AI Emergency Assistant</b>
+    <b>AI Emergency Assistant</b>
 
-<p id="chatResponse">How can I help?</p>
+    <div id="chatlog"></div>
 
-<input
-type="text"
-id="userInput"
-placeholder="Ask about emergency help..."
-onkeydown="chatBot(event)"
->
+    <input 
+        type="text" 
+        id="userInput" 
+        placeholder="Ask about emergency help..." 
+        onkeydown="handleKey(event)"
+    >
+
+    <button onclick="sendMessage()">Send</button>
 
 </div>
 
-<script src="script.js"></script>
+<!-- FOOTER -->
 <div class="footer">
-  © RapidRelief | Hackathon Prototype
+    © RapidRelief | Hackathon Prototype
 </div>
+
+<!-- JS LINK -->
+<script src="script.js"></script>
+
 </body>
 </html>
+
