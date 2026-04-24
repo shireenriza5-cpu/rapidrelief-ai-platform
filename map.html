@@ -2,8 +2,11 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Emergency Map System</title>
+<title>RapidRelief Emergency Map</title>
 
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- CSS -->
 <link rel="stylesheet" href="style.css">
 
 <style>
@@ -31,7 +34,7 @@ body {
   width: 100%;
 }
 
-/* Info box */
+/* Info Box */
 .info-box {
   position: absolute;
   top: 80px;
@@ -49,8 +52,9 @@ body {
 
 <body>
 
+<!-- NAVBAR -->
 <div class="navbar">
-  <h2>🗺 Emergency Response Map</h2>
+  <h2>🗺 RapidRelief Map</h2>
   <div>
     <a href="index.html">Home</a>
     <a href="report.html">Report</a>
@@ -58,6 +62,7 @@ body {
   </div>
 </div>
 
+<!-- INFO BOX -->
 <div class="info-box">
   <b>🚨 Nearby Help Status</b><br><br>
   🚑 Ambulance: 4 min<br>
@@ -66,19 +71,10 @@ body {
   🤝 NGO: 5 min<br>
 </div>
 
-<!-- GOOGLE MAP CONTAINER -->
+<!-- MAP -->
 <div id="map"></div>
 
-<!-- Google Maps API -->
-<script async
-src="https://maps.googleapis.com/maps/api/js?AIzaSyDTw8qFPIGx7Rj57eOiSpu2ASRzgdA41mo&callback=initMap">
-</script>
-
-<!-- Your JS file -->
-<script src="script.js"></script>
-
-<div id="map"></div>
-
+<!-- MAIN SCRIPT -->
 <script>
 function initMap() {
 
@@ -86,10 +82,10 @@ function initMap() {
 
   const map = new google.maps.Map(document.getElementById("map"), {
     zoom: 13,
-    center: userLocation,
+    center: userLocation
   });
 
-  // USER LOCATION
+  // USER MARKER
   new google.maps.Marker({
     position: userLocation,
     map: map,
@@ -97,49 +93,56 @@ function initMap() {
     icon: "https://maps.google.com/mapfiles/ms/icons/blue-dot.png"
   });
 
-  // HELP SERVICES DATA (simulated nearby)
+  // SERVICES DATA (merged from both codes)
   const services = [
     {
       name: "City Hospital",
-      type: "hospital",
+      type: "Hospital",
       pos: { lat: 28.6200, lng: 77.2300 },
       eta: "7 min",
-      icon: "https://maps.google.com/mapfiles/ms/icons/red-cross.png"
+      icon: "https://maps.google.com/mapfiles/ms/icons/red-dot.png"
     },
     {
       name: "Ambulance Unit A1",
-      type: "ambulance",
+      type: "Ambulance",
       pos: { lat: 28.6100, lng: 77.2000 },
       eta: "4 min",
       icon: "https://maps.google.com/mapfiles/ms/icons/green-dot.png"
     },
     {
-      name: "Fire Station 3",
-      type: "fire",
+      name: "Fire Station",
+      type: "Fire",
       pos: { lat: 28.6000, lng: 77.2150 },
       eta: "6 min",
       icon: "https://maps.google.com/mapfiles/ms/icons/orange-dot.png"
     },
     {
+      name: "Police Station",
+      type: "Police",
+      pos: { lat: 28.6150, lng: 77.2050 },
+      eta: "5 min",
+      icon: "https://maps.google.com/mapfiles/ms/icons/yellow-dot.png"
+    },
+    {
       name: "Red Cross NGO",
-      type: "ngo",
+      type: "NGO",
       pos: { lat: 28.6250, lng: 77.2100 },
       eta: "5 min",
       icon: "https://maps.google.com/mapfiles/ms/icons/purple-dot.png"
     }
   ];
 
-  // ADD MARKERS
+  // ADD MARKERS WITH INFO WINDOWS
   services.forEach(service => {
 
-    new google.maps.Marker({
+    const marker = new google.maps.Marker({
       position: service.pos,
       map: map,
       title: service.name,
       icon: service.icon
     });
 
-    const info = new google.maps.InfoWindow({
+    const infoWindow = new google.maps.InfoWindow({
       content: `
         <div style="font-family:Arial;">
           <h3>${service.name}</h3>
@@ -149,15 +152,8 @@ function initMap() {
       `
     });
 
-    const marker = new google.maps.Marker({
-      position: service.pos,
-      map: map,
-      title: service.name,
-      icon: service.icon
-    });
-
     marker.addListener("click", () => {
-      info.open(map, marker);
+      infoWindow.open(map, marker);
     });
 
   });
@@ -165,10 +161,13 @@ function initMap() {
 }
 </script>
 
-<!-- Google Maps API -->
+<!-- GOOGLE MAPS API (ONLY ONCE) -->
 <script async defer
-src="https://maps.googleapis.com/maps/api/js?AIzaSyDTw8qFPIGx7Rj57eOiSpu2ASRzgdA41mo&callback=initMap">
+src="https://maps.googleapis.com/maps/api/js?AIzaSyAitUqIl09ZDMD7zzLI3NAfdpj5WvgbjeE&callback=initMap">
 </script>
 
+<!-- OPTIONAL JS FILE -->
+<script src="script.js"></script>
+
 </body>
-</html>  
+</html>
