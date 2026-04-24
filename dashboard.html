@@ -1,0 +1,261 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>RapidRelief Authority Dashboard</title>
+
+<link rel="stylesheet" href="style.css">
+
+<style>
+
+/* GLOBAL BACKGROUND */
+
+body{
+margin:0;
+font-family:Arial;
+background: linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+color:white;
+}
+
+/* NAVBAR */
+
+.navbar{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:18px 25px;
+background:rgba(0,0,0,0.6);
+backdrop-filter:blur(10px);
+}
+
+.navbar a{
+color:white;
+margin-left:15px;
+text-decoration:none;
+font-weight:bold;
+}
+
+/* TITLE */
+
+h1{
+text-align:center;
+margin-top:25px;
+font-size:32px;
+}
+
+/* DASHBOARD GRID */
+
+.container{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+gap:20px;
+padding:30px;
+}
+
+/* INFO CARDS */
+
+.card{
+background:rgba(255,255,255,0.08);
+border-radius:15px;
+padding:20px;
+box-shadow:0 8px 20px rgba(0,0,0,0.3);
+transition:0.3s;
+cursor:pointer;
+}
+
+.card:hover{
+transform:translateY(-8px);
+background:rgba(255,255,255,0.15);
+}
+
+.icon{
+font-size:30px;
+margin-bottom:10px;
+}
+
+.green{color:#00ff99;}
+.red{color:#ff4d4d;}
+.blue{color:#4da6ff;}
+.yellow{color:#ffd11a;}
+
+/* ALERT SECTION */
+
+.alert-section{
+padding:20px 30px;
+}
+
+.alert-cards{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+gap:20px;
+margin-top:20px;
+}
+
+/* ALERT CARD */
+
+.alert{
+background:rgba(255,255,255,0.08);
+border-radius:15px;
+padding:20px;
+box-shadow:0 6px 18px rgba(0,0,0,0.4);
+transition:0.3s;
+}
+
+.alert:hover{
+transform:scale(1.03);
+}
+
+.priority-high{
+color:#ff4d4d;
+font-weight:bold;
+}
+
+.priority-medium{
+color:#ffd11a;
+font-weight:bold;
+}
+
+.priority-low{
+color:#00ff99;
+font-weight:bold;
+}
+
+/* BUTTON */
+
+.dispatch-btn{
+margin-top:10px;
+padding:10px 15px;
+border:none;
+background:#1877f2;
+color:white;
+border-radius:8px;
+cursor:pointer;
+font-weight:bold;
+transition:0.3s;
+}
+
+.dispatch-btn:hover{
+background:#0d5bd4;
+}
+
+/* FOOTER */
+
+.footer{
+text-align:center;
+padding:20px;
+opacity:0.7;
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+
+<div class="navbar">
+<h2>🚨 RapidRelief Dashboard</h2>
+
+<div>
+<a href="index.html">Home</a>
+<a href="report.html">Report</a>
+<a href="map.html">Map</a>
+<a href="dashboard.html">Dashboard</a>
+</div>
+</div>
+
+<h1>🚨 Emergency Control Center</h1>
+
+<!-- SYSTEM STATUS -->
+
+<div class="container">
+
+<div class="card">
+<div class="icon">🚑</div>
+<h3>Ambulance System</h3>
+<p class="green">Active Units: 12</p>
+<p>Avg Response: 4 min</p>
+</div>
+
+<div class="card">
+<div class="icon">🏥</div>
+<h3>Hospitals Network</h3>
+<p class="blue">Nearby Hospitals: 8</p>
+<p>Bed Availability: 72%</p>
+</div>
+
+<div class="card">
+<div class="icon">🚒</div>
+<h3>Fire Services</h3>
+<p class="red">Active Alerts: 1</p>
+<p>Response Time: 6 min</p>
+</div>
+
+<div class="card">
+<div class="icon">🤝</div>
+<h3>NGO Support</h3>
+<p class="yellow">Active NGOs: 5</p>
+<p>Volunteer Ready</p>
+</div>
+
+<div class="card">
+<div class="icon">📡</div>
+<h3>Live Tracking</h3>
+<p class="green">System Online</p>
+<p>GPS Enabled</p>
+</div>
+
+<div class="card">
+<div class="icon">🤖</div>
+<h3>AI Assistant</h3>
+<p class="blue">Online</p>
+<p>Emergency chatbot support</p>
+</div>
+
+</div>
+
+<!-- EMERGENCY ALERTS -->
+
+<div class="alert-section">
+
+<h2>Live Emergency Alerts</h2>
+
+<div class="alert-cards">
+  <div class="alert-cards" id="alertContainer">
+</div>
+
+<div class="alert">
+<h3>Accident Alert</h3>
+<p>Location: Connaught Place</p>
+<p class="priority-high">High Priority</p>
+<button class="dispatch-btn">Dispatch Ambulance</button>
+</div>
+
+<div class="alert">
+<h3>Fire Incident</h3>
+<p>Location: Karol Bagh</p>
+<p class="priority-medium">Medium Priority</p>
+<button class="dispatch-btn">Dispatch Fire Truck</button>
+</div>
+
+<div class="alert">
+<h3>Medical Emergency</h3>
+<p>Location: Rohini</p>
+<p class="priority-low">Low Priority</p>
+<button class="dispatch-btn">Dispatch Ambulance</button>
+</div>
+
+</div>
+
+</div>
+
+<div class="footer">
+© RapidRelief Emergency System | Hackathon Prototype
+</div>
+
+<script src="script.js"></script>
+
+</body>
+</html>
+```

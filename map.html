@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Emergency Map System</title>
+
+<link rel="stylesheet" href="style.css">
+
+<style>
+body {
+  margin: 0;
+  font-family: Arial;
+}
+
+.navbar {
+  background: #111;
+  color: white;
+  padding: 15px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.navbar a {
+  color: white;
+  margin-left: 15px;
+  text-decoration: none;
+}
+
+#map {
+  height: 85vh;
+  width: 100%;
+}
+
+/* Info box */
+.info-box {
+  position: absolute;
+  top: 80px;
+  left: 15px;
+  background: white;
+  padding: 12px;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+  z-index: 5;
+  width: 220px;
+  font-size: 14px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="navbar">
+  <h2>🗺 Emergency Response Map</h2>
+  <div>
+    <a href="index.html">Home</a>
+    <a href="report.html">Report</a>
+    <a href="dashboard.html">Dashboard</a>
+  </div>
+</div>
+
+<div class="info-box">
+  <b>🚨 Nearby Help Status</b><br><br>
+  🚑 Ambulance: 4 min<br>
+  🏥 Hospital: 7 min<br>
+  🚒 Fire Truck: 6 min<br>
+  🤝 NGO: 5 min<br>
+</div>
+
+<!-- GOOGLE MAP CONTAINER -->
+<div id="map"></div>
+
+<!-- Google Maps API -->
+<script async
+src="https://maps.googleapis.com/maps/api/js?AIzaSyDTw8qFPIGx7Rj57eOiSpu2ASRzgdA41mo&callback=initMap">
+</script>
+
+<!-- Your JS file -->
+<script src="script.js"></script>
+
+<div id="map"></div>
+
+<script>
+function initMap() {
+
+  const userLocation = { lat: 28.6139, lng: 77.2090 };
+
+  const map = new google.maps.Map(document.getElementById("map"), {
+    zoom: 13,
+    center: userLocation,
+  });
+
+  // USER LOCATION
+  new google.maps.Marker({
+    position: userLocation,
+    map: map,
+    title: "You are here",
+    icon: "https://maps.google.com/mapfiles/ms/icons/blue-dot.png"
+  });
+
+  // HELP SERVICES DATA (simulated nearby)
+  const services = [
+    {
+      name: "City Hospital",
+      type: "hospital",
+      pos: { lat: 28.6200, lng: 77.2300 },
+      eta: "7 min",
+      icon: "https://maps.google.com/mapfiles/ms/icons/red-cross.png"
+    },
+    {
+      name: "Ambulance Unit A1",
+      type: "ambulance",
+      pos: { lat: 28.6100, lng: 77.2000 },
+      eta: "4 min",
+      icon: "https://maps.google.com/mapfiles/ms/icons/green-dot.png"
+    },
+    {
+      name: "Fire Station 3",
+      type: "fire",
+      pos: { lat: 28.6000, lng: 77.2150 },
+      eta: "6 min",
+      icon: "https://maps.google.com/mapfiles/ms/icons/orange-dot.png"
+    },
+    {
+      name: "Red Cross NGO",
+      type: "ngo",
+      pos: { lat: 28.6250, lng: 77.2100 },
+      eta: "5 min",
+      icon: "https://maps.google.com/mapfiles/ms/icons/purple-dot.png"
+    }
+  ];
+
+  // ADD MARKERS
+  services.forEach(service => {
+
+    new google.maps.Marker({
+      position: service.pos,
+      map: map,
+      title: service.name,
+      icon: service.icon
+    });
+
+    const info = new google.maps.InfoWindow({
+      content: `
+        <div style="font-family:Arial;">
+          <h3>${service.name}</h3>
+          <p>Type: ${service.type}</p>
+          <b>⏱ Arrival Time: ${service.eta}</b>
+        </div>
+      `
+    });
+
+    const marker = new google.maps.Marker({
+      position: service.pos,
+      map: map,
+      title: service.name,
+      icon: service.icon
+    });
+
+    marker.addListener("click", () => {
+      info.open(map, marker);
+    });
+
+  });
+
+}
+</script>
+
+<!-- Google Maps API -->
+<script async defer
+src="https://maps.googleapis.com/maps/api/js?AIzaSyDTw8qFPIGx7Rj57eOiSpu2ASRzgdA41mo&callback=initMap">
+</script>
+
+</body>
+</html>  

@@ -1,0 +1,215 @@
+
+
+body{
+margin:0;
+font-family:Arial;
+color:white;
+text-align:center;
+overflow-x:hidden;
+
+/* PREMIUM PURPLE GRADIENT (ANIMATED) */
+background: linear-gradient(270deg, #2c003e, #5f0a87, #a4508b, #6a11cb);
+background-size: 800% 800%;
+animation: gradientShift 15s ease infinite;
+
+position:relative;
+}
+
+/* FLOATING BUBBLES */
+body::before{
+content:"";
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+
+/* MULTI-LAYER BUBBLES */
+background-image:
+radial-gradient(circle at 20% 30%, rgba(255,255,255,0.25) 6px, transparent 7px),
+radial-gradient(circle at 70% 60%, rgba(255,255,255,0.15) 10px, transparent 11px),
+radial-gradient(circle at 40% 80%, rgba(255,255,255,0.2) 8px, transparent 9px),
+radial-gradient(circle at 80% 20%, rgba(255,255,255,0.18) 12px, transparent 13px);
+
+animation: bubblesMove 25s linear infinite;
+z-index:-1;
+}
+
+/* GRADIENT ANIMATION */
+@keyframes gradientShift{
+0%{background-position:0% 50%;}
+50%{background-position:100% 50%;}
+100%{background-position:0% 50%;}
+}
+
+/* BUBBLE FLOAT ANIMATION */
+@keyframes bubblesMove{
+0%{
+transform:translateY(0);
+}
+100%{
+transform:translateY(-1000px);
+}
+}
+/* NAVBAR */
+
+.navbar{
+display:flex;
+justify-content:space-between;
+padding:15px 40px;
+background:rgba(0,0,0,0.3);
+backdrop-filter:blur(6px);
+}
+
+.navbar a{
+color:white;
+margin-left:20px;
+text-decoration:none;
+font-weight:bold;
+}
+
+
+.info-box {
+  position: absolute;
+  top: 80px;
+  left: 15px;
+  background: white;
+  padding: 12px;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+  z-index: 5;
+  width: 220px;
+  font-size: 14px;
+  color: black; /* ✅ ADD THIS */
+}
+
+/* HERO */
+
+.hero{
+padding:90px 20px;
+}
+
+.hero h1{
+font-size:42px;
+}
+
+.hero p{
+max-width:700px;
+margin:auto;
+}
+
+/* BUTTONS */
+
+.buttons{
+margin-top:40px;
+}
+
+.buttons button{
+padding:16px 28px;
+margin:12px;
+border:none;
+border-radius:30px;
+font-size:16px;
+cursor:pointer;
+transition:0.3s;
+}
+
+.btn1{background:#ff4b5c;color:white;}
+.btn2{background:#00c9a7;color:white;}
+.btn3{background:#845ec2;color:white;}
+
+.buttons button:hover{
+transform:scale(1.1);
+box-shadow:0 10px 20px rgba(0,0,0,0.2);
+}
+
+/* FEATURES */
+
+.features{
+display:flex;
+flex-wrap:wrap;
+justify-content:center;
+gap:30px;
+margin-top:60px;
+}
+
+.card{
+background:rgba(255,255,255,0.2);
+padding:25px;
+border-radius:15px;
+width:240px;
+backdrop-filter:blur(5px);
+transition:0.3s;
+}
+
+.card:hover{
+transform:translateY(-10px);
+}
+
+/* STATS */
+
+.stats{
+margin-top:60px;
+display:flex;
+justify-content:center;
+gap:40px;
+flex-wrap:wrap;
+}
+
+.stat{
+background:rgba(0,0,0,0.25);
+padding:20px;
+border-radius:12px;
+width:160px;
+}
+
+
+
+/* CHATBOT */
+
+.chat-btn{
+position:fixed;
+bottom:20px;
+right:20px;
+background:#ff4b5c;
+color:white;
+border:none;
+padding:15px 20px;
+border-radius:30px;
+cursor:pointer;
+font-weight:bold;
+}
+
+.chatbox{
+display:none;
+position:fixed;
+bottom:80px;
+right:20px;
+width:300px;
+background:white;
+color:black;
+padding:15px;
+border-radius:12px;
+box-shadow:0 10px 25px rgba(0,0,0,0.3);
+}
+
+#chatlog{
+height:150px;
+overflow:auto;
+margin-bottom:10px;
+border:1px solid #ddd;
+padding:6px;
+}
+
+.chatbox input{
+width:70%;
+padding:8px;
+}
+
+.chatbox button{
+padding:8px;
+background:#00c9a7;
+border:none;
+color:white;
+cursor:pointer;
+}

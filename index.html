@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<title>Rapid Relief</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+<div class="navbar">
+
+<h2>🚑 RapidRelief</h2>
+
+<div>
+<a href="index.html">Home</a>
+<a href="report.html">Report</a>
+<a href="map.html">Map</a>
+<a href="dashboard.html">Dashboard</a>
+</div>
+
+</div>
+
+<div class="hero">
+
+<h1>RapidRelief</h1>
+
+<p>
+AI-powered system connecting citizens, authorities,
+and emergency resources for faster response.
+</p>
+
+<div class="buttons">
+
+<a href="report.html">
+<button>🚨 Report Emergency</button>
+</a>
+
+<a href="map.html">
+<button>🗺 Resource Map</button>
+</a>
+
+<a href="dashboard.html">
+<button>📊 Authority Dashboard</button>
+</a>
+
+</div>
+
+</div>
+
+<div class="features">
+
+<div class="card">
+<h3>🧠 AI Priority Detection</h3>
+<p>AI analyzes emergency descriptions and assigns priority.</p>
+</div>
+
+<div class="card">
+<h3>📍 Smart Resource Map</h3>
+<p>View nearby hospitals, ambulances and shelters.</p>
+</div>
+
+<div class="card">
+<h3>🚑 Faster Response</h3>
+<p>Authorities receive instant alerts.</p>
+</div>
+
+<div class="card">
+<h3>🤖 AI Assistant</h3>
+<p>Chatbot helps citizens during emergencies.</p>
+</div>
+
+</div>
+
+<div class="stats">
+
+<div class="stat">
+<h2>120+</h2>
+<p>Emergencies</p>
+</div>
+
+<div class="stat">
+<h2>45</h2>
+<p>Ambulances</p>
+</div>
+
+<div class="stat">
+<h2>32</h2>
+<p>Hospitals</p>
+</div>
+
+</div>
+
+<button class="chat-btn" onclick="toggleChat()">🤖</button>
+
+<div class="chatbox" id="chatbox">
+
+<b>AI Emergency Assistant</b>
+
+<p id="chatResponse">How can I help?</p>
+
+<input
+type="text"
+id="userInput"
+placeholder="Ask about emergency help..."
+onkeydown="chatBot(event)"
+>
+
+</div>
+
+<script src="script.js"></script>
+<div class="footer">
+  © RapidRelief | Hackathon Prototype
+</div>
+</body>
+</html>
