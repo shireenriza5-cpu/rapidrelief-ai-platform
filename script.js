@@ -1,212 +1,176 @@
 //////////////////////////////
-// SUBMIT REPORT
+// 🚨 REPORT SYSTEM (LOCAL STORAGE)
 //////////////////////////////
 
 function submitReport(event){
+    if(event) event.preventDefault();
 
-event.preventDefault();
+    let name = document.getElementById("name")?.value || "";
+    let place = document.getElementById("place")?.value || "";
+    let type = document.getElementById("type")?.value || "";
+    let desc = document.getElementById("desc")?.value || "";
 
-let name=document.getElementById("name").value;
-let place=document.getElementById("place").value;
-let type=document.getElementById("type").value;
-let desc=document.getElementById("desc").value;
+    let report = { name, place, type, desc };
 
-let report={
-name:name,
-place:place,
-type:type,
-desc:desc
-};
+    let reports = JSON.parse(localStorage.getItem("reports")) || [];
+    reports.push(report);
 
-let reports=JSON.parse(localStorage.getItem("reports")) || [];
+    localStorage.setItem("reports", JSON.stringify(reports));
 
-reports.push(report);
+    let msg = document.getElementById("successMsg") || document.getElementById("msg");
+    if(msg){
+        msg.style.display = "block";
+        msg.innerText = "✅ Emergency Sent Successfully 🚑";
+    }
 
-localStorage.setItem("reports",JSON.stringify(reports));
+    event.target.reset();
 
-document.getElementById("successMsg").style.display="block";
-
+    return false;
 }
 
+
 //////////////////////////////
-// LOAD REPORTS IN DASHBOARD
+// 📊 LOAD DASHBOARD REPORTS
 //////////////////////////////
 
-window.onload=function(){
+window.addEventListener("load", function(){
 
-let container=document.getElementById("alertContainer");
+    let container = document.getElementById("alertContainer");
 
-if(!container) return;
+    if(!container) return;
 
-let reports=JSON.parse(localStorage.getItem("reports")) || [];
+    let reports = JSON.parse(localStorage.getItem("reports")) || [];
 
-reports.forEach(function(r){
+    reports.forEach(r => {
 
-let card=document.createElement("div");
-card.className="alert";
+        let card = document.createElement("div");
+        card.className = "alert";
 
-card.innerHTML=`
+        card.innerHTML = `
+            <h3>${r.type} Alert</h3>
+            <p>📍 Location: ${r.place}</p>
+            <p>👤 Reported by: ${r.name}</p>
+            <p>${r.desc}</p>
+            <p class="priority-high">HIGH PRIORITY</p>
+            <button class="dispatch-btn" onclick="dispatchHelp()">Dispatch Help</button>
+        `;
 
-<h3>${r.type} Alert</h3>
-<p>Location: ${r.place}</p>
-<p>Reported by: ${r.name}</p>
-<p>${r.desc}</p>
-<p class="priority-high">High Priority</p>
-
-<button class="dispatch-btn">
-Dispatch Help
-</button>
-
-`;
-
-container.appendChild(card);
+        container.appendChild(card);
+    });
 
 });
 
-};
-
-
-
 
 //////////////////////////////
-// 🚨 REPORT SYSTEM
+// 🧠 DISPATCH SYSTEM (SIMULATION)
 //////////////////////////////
 
-function submitReport(event){
-
-if(event) event.preventDefault();
-
-let msg = document.getElementById("msg");
-
-if(msg){
-msg.innerText = "✅ Emergency sent to authorities 🚑";
+function dispatchHelp(){
+    alert("🚑 Emergency Services Dispatched!");
 }
 
-// small demo alert (optional)
-console.log("Emergency report submitted");
-
-return false;
-}
 
 //////////////////////////////
-// 🗺 GOOGLE MAP INIT
+// 🗺 GOOGLE MAP INITIALIZATION
 //////////////////////////////
-
 
 function initMap(){
 
-   const map = new google.maps.Map(document.getElementById("map"), {
-      zoom: 12,
-      center: { lat: 28.6139, lng: 77.2090 }
-   });
+    const location = { lat: 28.6139, lng: 77.2090 };
 
+    const map = new google.maps.Map(document.getElementById("map"), {
+        zoom: 12,
+        center: location
+    });
 
-// map
-const map = new google.maps.Map(document.getElementById("map"),{
-zoom: 12,
-center: location
-});
+    // USER
+    new google.maps.Marker({
+        position: location,
+        map: map,
+        title: "User 📍"
+    });
 
-// user marker
-new google.maps.Marker({
-position: location,
-map: map,
-title: "User Location 📍"
-});
+    // SERVICES
+    const services = [
+        {pos:{lat:28.6200,lng:77.2300},title:"Hospital 🚑"},
+        {pos:{lat:28.6000,lng:77.2100},title:"Fire Station 🔥"},
+        {pos:{lat:28.6100,lng:77.2000},title:"Police 🛡"}
+    ];
 
-// hospital
-new google.maps.Marker({
-position: { lat: 28.6200, lng: 77.2300 },
-map: map,
-title: "Hospital 🚑"
-});
+    services.forEach(s => {
+        new google.maps.Marker({
+            position: s.pos,
+            map: map,
+            title: s.title
+        });
+    });
 
-// fire station
-new google.maps.Marker({
-position: { lat: 28.6000, lng: 77.2100 },
-map: map,
-title: "Fire Station 🔥"
-});
-
-// police
-new google.maps.Marker({
-position: { lat: 28.6100, lng: 77.2000 },
-map: map,
-title: "Police Station 🛡"
-});
-
-// reach time
-setTimeout(()=>{
-let reach = document.getElementById("reach");
-if(reach){
-reach.innerText = "🚑 Estimated Fastest Reach Time: 4–6 minutes (AI Optimized)";
+    setTimeout(() => {
+        let reach = document.getElementById("reach");
+        if(reach){
+            reach.innerText = "🚑 Fastest AI ETA: 4–6 minutes";
+        }
+    }, 1000);
 }
-},1000);
 
-}
 
 //////////////////////////////
-// 🤖 CHATBOT SYSTEM
+// 🤖 CHATBOT SYSTEM (FIXED)
 //////////////////////////////
 
 function toggleChat(){
+    let box = document.getElementById("chatbox");
+    if(!box) return;
 
-let chat=document.getElementById("chatbox");
+    box.style.display = (box.style.display === "block") ? "none" : "block";
+}
 
-if(chat.style.display==="block"){
-chat.style.display="none";
-}else{
-chat.style.display="block";
-}
-}
 
 function sendMessage(){
 
-let input=document.getElementById("userInput");
-let chatlog=document.getElementById("chatlog");
+    let input = document.getElementById("userInput");
+    let log = document.getElementById("chatlog");
 
-let msg = input.value.trim();
+    if(!input || !log) return;
 
-if(msg==="") return;
+    let msg = input.value.trim();
+    if(msg === "") return;
 
-// user message
-chatlog.innerHTML += "<p><b>You:</b> "+msg+"</p>";
+    let lower = msg.toLowerCase();
 
-let reply="⚠️ Please stay calm. Help is being processed.";
+    log.innerHTML += `<p><b>You:</b> ${msg}</p>`;
 
-// smarter logic (FIXED with else-if)
-if(msg.toLowerCase().includes("fire")){
-reply="🔥 Fire detected: Stay away and call fire brigade immediately.";
+    let reply = "⚠️ Stay calm. Help is being processed.";
+
+    if(lower.includes("fire")){
+        reply = "🔥 Fire emergency detected. Fire brigade alerted!";
+    }
+    else if(lower.includes("accident")){
+        reply = "🚑 Ambulance is being dispatched!";
+    }
+    else if(lower.includes("police")){
+        reply = "🛡 Police have been notified!";
+    }
+    else if(lower.includes("help")){
+        reply = "🆘 Emergency system activated!";
+    }
+
+    log.innerHTML += `<p><b>AI:</b> ${reply}</p>`;
+
+    input.value = "";
+    log.scrollTop = log.scrollHeight;
 }
-else if(msg.toLowerCase().includes("accident")){
-reply="🚑 Accident reported: Checking nearest ambulance availability.";
-}
-else if(msg.toLowerCase().includes("help")){
-reply="🆘 Emergency assistance activated. Help is on the way.";
-}
-else if(msg.toLowerCase().includes("police")){
-reply="🛡 Police units are being notified in your area.";
-}
 
-// AI response
-chatlog.innerHTML += "<p><b>AI:</b> "+reply+"</p>";
-
-// auto scroll
-chatlog.scrollTop = chatlog.scrollHeight;
-
-// clear input
-input.value="";
-}
 
 //////////////////////////////
-// ENTER KEY SUPPORT (optional but pro)
+// ⌨ ENTER KEY SUPPORT
 //////////////////////////////
 
-document.addEventListener("keypress", function(e){
-if(e.key === "Enter"){
-let box = document.getElementById("chatbox");
-if(box && box.style.display==="block"){
-sendMessage();
-}
-}
+document.addEventListener("keydown", function(e){
+    if(e.key === "Enter"){
+        let box = document.getElementById("chatbox");
+        if(box && box.style.display === "block"){
+            sendMessage();
+        }
+    }
 });
