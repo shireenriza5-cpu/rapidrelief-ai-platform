@@ -1,176 +1,219 @@
-//////////////////////////////
-// 🚨 REPORT SYSTEM (LOCAL STORAGE)
-//////////////////////////////
+/////////////////////////////////////////////
+// 🚑 AI CIVIC PLATFORM - FINAL SCRIPT.JS
+/////////////////////////////////////////////
 
-function submitReport(event){
-    if(event) event.preventDefault();
+// Initialize map
+var map = L.map('map').setView([28.6139, 77.2090], 12); // Delhi
 
-    let name = document.getElementById("name")?.value || "";
-    let place = document.getElementById("place")?.value || "";
-    let type = document.getElementById("type")?.value || "";
-    let desc = document.getElementById("desc")?.value || "";
-
-    let report = { name, place, type, desc };
-
-    let reports = JSON.parse(localStorage.getItem("reports")) || [];
-    reports.push(report);
-
-    localStorage.setItem("reports", JSON.stringify(reports));
-
-    let msg = document.getElementById("successMsg") || document.getElementById("msg");
-    if(msg){
-        msg.style.display = "block";
-        msg.innerText = "✅ Emergency Sent Successfully 🚑";
-    }
-
-    event.target.reset();
-
-    return false;
-}
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '© OpenStreetMap contributors'
+}).addTo(map);
 
 
-//////////////////////////////
-// 📊 LOAD DASHBOARD REPORTS
-//////////////////////////////
+/////////////////////////////////////////////
+// 🎨 ICONS
+/////////////////////////////////////////////
 
-window.addEventListener("load", function(){
+const blueIcon = L.icon({
+    iconUrl: 'https://maps.google.com/mapfiles/ms/icons/blue-dot.png',
+    iconSize: [32, 32]
+});
 
-    let container = document.getElementById("alertContainer");
+const redIcon = L.icon({
+    iconUrl: 'https://maps.google.com/mapfiles/ms/icons/red-dot.png',
+    iconSize: [32, 32]
+});
 
-    if(!container) return;
+const yellowIcon = L.icon({
+    iconUrl: 'https://maps.google.com/mapfiles/ms/icons/yellow-dot.png',
+    iconSize: [32, 32]
+});
 
-    let reports = JSON.parse(localStorage.getItem("reports")) || [];
+const orangeIcon = L.icon({
+    iconUrl: 'https://maps.google.com/mapfiles/ms/icons/orange-dot.png',
+    iconSize: [32, 32]
+});
 
-    reports.forEach(r => {
-
-        let card = document.createElement("div");
-        card.className = "alert";
-
-        card.innerHTML = `
-            <h3>${r.type} Alert</h3>
-            <p>📍 Location: ${r.place}</p>
-            <p>👤 Reported by: ${r.name}</p>
-            <p>${r.desc}</p>
-            <p class="priority-high">HIGH PRIORITY</p>
-            <button class="dispatch-btn" onclick="dispatchHelp()">Dispatch Help</button>
-        `;
-
-        container.appendChild(card);
-    });
-
+const purpleIcon = L.icon({
+    iconUrl: 'https://maps.google.com/mapfiles/ms/icons/purple-dot.png',
+    iconSize: [32, 32]
 });
 
 
-//////////////////////////////
-// 🧠 DISPATCH SYSTEM (SIMULATION)
-//////////////////////////////
+/////////////////////////////////////////////
+// 📍 SAMPLE SERVICE LOCATIONS
+/////////////////////////////////////////////
 
-function dispatchHelp(){
-    alert("🚑 Emergency Services Dispatched!");
-}
+const hospitalLocation = [28.7041, 77.1025];
+const policeLocation = [28.5355, 77.3910];
+const fireLocation = [28.4595, 77.0266];
+const ngoLocation = [28.4089, 77.3178];
 
 
-//////////////////////////////
-// 🗺 GOOGLE MAP INITIALIZATION
-//////////////////////////////
+/////////////////////////////////////////////
+// 🚀 CREATE MARKERS (ONLY ONCE)
+/////////////////////////////////////////////
 
-function initMap(){
+let userMarker = null;
 
-    const location = { lat: 28.6139, lng: 77.2090 };
+let hospitalMarker = L.marker(hospitalLocation, { icon: redIcon }).addTo(map);
+let policeMarker = L.marker(policeLocation, { icon: yellowIcon }).addTo(map);
+let fireMarker = L.marker(fireLocation, { icon: orangeIcon }).addTo(map);
+let ngoMarker = L.marker(ngoLocation, { icon: purpleIcon }).addTo(map);
 
-    const map = new google.maps.Map(document.getElementById("map"), {
-        zoom: 12,
-        center: location
-    });
 
-    // USER
-    new google.maps.Marker({
-        position: location,
-        map: map,
-        title: "User 📍"
-    });
+/////////////////////////////////////////////
+// 🎯 MOVE FUNCTION (NO DUPLICATES + STOP)
+/////////////////////////////////////////////
 
-    // SERVICES
-    const services = [
-        {pos:{lat:28.6200,lng:77.2300},title:"Hospital 🚑"},
-        {pos:{lat:28.6000,lng:77.2100},title:"Fire Station 🔥"},
-        {pos:{lat:28.6100,lng:77.2000},title:"Police 🛡"}
-    ];
+function moveMarker(marker, start, end) {
 
-    services.forEach(s => {
-        new google.maps.Marker({
-            position: s.pos,
-            map: map,
-            title: s.title
-        });
-    });
+    let lat = start[0];
+    let lng = start[1];
 
-    setTimeout(() => {
-        let reach = document.getElementById("reach");
-        if(reach){
-            reach.innerText = "🚑 Fastest AI ETA: 4–6 minutes";
+    let steps = 120;
+    let stepLat = (end[0] - start[0]) / steps;
+    let stepLng = (end[1] - start[1]) / steps;
+
+    let count = 0;
+
+    let interval = setInterval(() => {
+
+        if (count >= steps) {
+            clearInterval(interval);        // ✅ STOP
+            marker.setLatLng(end);          // exact destination
+            return;
         }
-    }, 1000);
+
+        lat += stepLat;
+        lng += stepLng;
+
+        marker.setLatLng([lat, lng]);       // ✅ UPDATE ONLY (NO NEW MARKER)
+
+        count++;
+
+    }, 40); // smooth speed
 }
 
 
-//////////////////////////////
-// 🤖 CHATBOT SYSTEM (FIXED)
-//////////////////////////////
+/////////////////////////////////////////////
+// 🧠 HANDLE REPORT SUBMISSION
+/////////////////////////////////////////////
 
+function handleReport(type, userLocation) {
+
+    // Remove old user marker (avoid duplicates)
+    if (userMarker) {
+        map.removeLayer(userMarker);
+    }
+
+    // Create new user marker (blue)
+    userMarker = L.marker(userLocation, { icon: blueIcon }).addTo(map);
+
+    // Center map
+    map.setView(userLocation, 13);
+
+    /////////////////////////////////////////////
+    // 🔥 LOGIC BASED MOVEMENT
+    /////////////////////////////////////////////
+
+    if (type === "medical") {
+        moveMarker(hospitalMarker, hospitalLocation, userLocation);
+    }
+
+    else if (type === "accident") {
+        moveMarker(policeMarker, policeLocation, userLocation);
+    }
+
+    else if (type === "fire") {
+        moveMarker(fireMarker, fireLocation, userLocation);
+    }
+
+    else if (type === "food" || type === "shelter") {
+        moveMarker(ngoMarker, ngoLocation, userLocation);
+    }
+}
+
+
+/////////////////////////////////////////////
+// 🧪 DEMO (REMOVE WHEN CONNECTED TO BACKEND)
+/////////////////////////////////////////////
+
+// Example trigger (simulate report)
+setTimeout(() => {
+
+    let type = "fire"; // change this to test
+    let userLocation = [28.61, 77.23];
+
+    handleReport(type, userLocation);
+
+}, 2000);
+
+function calculateRisk(type, desc){
+
+desc = desc.toLowerCase();
+
+let score = 0;
+
+// base score by type
+if(type==="fire") score += 80;
+if(type==="medical") score += 70;
+if(type==="disaster") score += 90;
+if(type==="food") score += 50;
+if(type==="ngo") score += 40;
+
+// keyword intelligence
+if(desc.includes("urgent") || desc.includes("critical")) score += 20;
+if(desc.includes("death") || desc.includes("bleeding")) score += 30;
+if(desc.includes("accident")) score += 25;
+if(desc.includes("fire spreading")) score += 35;
+
+return Math.min(score,100);
+}
+
+function submitReport(e){
+e.preventDefault();
+
+let report = {
+name: name.value,
+place: place.value,
+type: type.value,
+desc: desc.value,
+risk: calculateRisk(type.value, desc.value),
+time: new Date()
+};
+
+db.collection("reports").add(report);
+
+msg.innerText="✅ Emergency sent with AI Priority!";
+}
+
+// CHATBOT (SMART)
 function toggleChat(){
-    let box = document.getElementById("chatbox");
-    if(!box) return;
-
-    box.style.display = (box.style.display === "block") ? "none" : "block";
+chatbox.style.display = chatbox.style.display==="block"?"none":"block";
 }
-
 
 function sendMessage(){
+let msgText = userInput.value.toLowerCase();
 
-    let input = document.getElementById("userInput");
-    let log = document.getElementById("chatlog");
+chatlog.innerHTML += "<p>You: "+msgText+"</p>";
 
-    if(!input || !log) return;
+let reply="⚠️ Stay calm. Help is being processed.";
 
-    let msg = input.value.trim();
-    if(msg === "") return;
-
-    let lower = msg.toLowerCase();
-
-    log.innerHTML += `<p><b>You:</b> ${msg}</p>`;
-
-    let reply = "⚠️ Stay calm. Help is being processed.";
-
-    if(lower.includes("fire")){
-        reply = "🔥 Fire emergency detected. Fire brigade alerted!";
-    }
-    else if(lower.includes("accident")){
-        reply = "🚑 Ambulance is being dispatched!";
-    }
-    else if(lower.includes("police")){
-        reply = "🛡 Police have been notified!";
-    }
-    else if(lower.includes("help")){
-        reply = "🆘 Emergency system activated!";
-    }
-
-    log.innerHTML += `<p><b>AI:</b> ${reply}</p>`;
-
-    input.value = "";
-    log.scrollTop = log.scrollHeight;
+// smarter responses
+if(msgText.includes("fire")){
+reply="🔥 Move away immediately. Fire team alerted.";
+}
+else if(msgText.includes("bleeding")){
+reply="🩸 Apply pressure and seek medical help urgently.";
+}
+else if(msgText.includes("earthquake")){
+reply="🌍 Move to open area. Avoid buildings.";
+}
+else if(msgText.includes("help")){
+reply="🆘 Your request is prioritized by AI.";
 }
 
-
-//////////////////////////////
-// ⌨ ENTER KEY SUPPORT
-//////////////////////////////
-
-document.addEventListener("keydown", function(e){
-    if(e.key === "Enter"){
-        let box = document.getElementById("chatbox");
-        if(box && box.style.display === "block"){
-            sendMessage();
-        }
-    }
-});
+chatlog.innerHTML += "<p>AI: "+reply+"</p>";
+userInput.value="";
+}
