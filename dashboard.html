@@ -3,15 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <title>RapidRelief Authority Dashboard</title>
-
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<!-- MAIN CSS -->
 <link rel="stylesheet" href="style.css">
 
 <style>
 
-/* BACKGROUND */
 body{
 margin:0;
 font-family:Arial;
@@ -41,6 +38,22 @@ h1{
 text-align:center;
 margin-top:25px;
 font-size:32px;
+}
+
+/* STATS */
+.stats{
+display:flex;
+justify-content:center;
+gap:20px;
+margin:20px;
+flex-wrap:wrap;
+}
+
+.stat{
+background:rgba(255,255,255,0.1);
+padding:15px 25px;
+border-radius:10px;
+font-weight:bold;
 }
 
 /* GRID */
@@ -77,23 +90,7 @@ margin-bottom:10px;
 .blue{color:#4da6ff;}
 .yellow{color:#ffd11a;}
 
-/* STATS BAR (from second code) */
-.stats{
-display:flex;
-justify-content:center;
-gap:20px;
-margin:20px;
-flex-wrap:wrap;
-}
-
-.stat{
-background:rgba(255,255,255,0.1);
-padding:15px 25px;
-border-radius:10px;
-font-weight:bold;
-}
-
-/* ALERT SECTION */
+/* ALERTS */
 .alert-section{
 padding:20px 30px;
 }
@@ -163,7 +160,7 @@ opacity:0.7;
 
 <h1>🚨 Emergency Control Center</h1>
 
-<!-- QUICK STATS (from second code) -->
+<!-- STATS -->
 <div class="stats">
 <div class="stat">🚑 Ambulances: 12</div>
 <div class="stat">🏥 Hospitals: 8</div>
@@ -219,7 +216,6 @@ opacity:0.7;
 
 <!-- ALERTS -->
 <div class="alert-section">
-
 <h2>Live Emergency Alerts</h2>
 
 <div class="alert-cards" id="alertContainer">
@@ -228,25 +224,30 @@ opacity:0.7;
 <h3>Accident Alert</h3>
 <p>Location: Connaught Place</p>
 <p class="priority-high">High Priority</p>
-<button class="dispatch-btn" onclick="dispatch('Ambulance')">Dispatch Ambulance</button>
+<button class="dispatch-btn" onclick="dispatch('Ambulance')">
+Dispatch Ambulance
+</button>
 </div>
 
 <div class="alert">
 <h3>Fire Incident</h3>
 <p>Location: Karol Bagh</p>
 <p class="priority-medium">Medium Priority</p>
-<button class="dispatch-btn" onclick="dispatch('Fire Truck')">Dispatch Fire Truck</button>
+<button class="dispatch-btn" onclick="dispatch('Fire Truck')">
+Dispatch Fire Truck
+</button>
 </div>
 
 <div class="alert">
 <h3>Medical Emergency</h3>
 <p>Location: Rohini</p>
 <p class="priority-low">Low Priority</p>
-<button class="dispatch-btn" onclick="dispatch('Ambulance')">Dispatch Ambulance</button>
+<button class="dispatch-btn" onclick="dispatch('Ambulance')">
+Dispatch Ambulance
+</button>
 </div>
 
 </div>
-
 </div>
 
 <!-- FOOTER -->
@@ -256,6 +257,59 @@ opacity:0.7;
 
 <!-- JS -->
 <script src="script.js"></script>
+
+<script>
+
+function dispatch(type){
+alert(type + " dispatched successfully 🚨");
+}
+
+//////////////////////////////////////////////////
+// LOAD REPORTS FROM report.html
+//////////////////////////////////////////////////
+
+let reports = JSON.parse(localStorage.getItem("reports")) || [];
+
+let container = document.getElementById("alertContainer");
+
+reports.forEach(r => {
+
+let priorityClass = "priority-low";
+
+if(r.type === "accident" || r.type === "fire"){
+priorityClass = "priority-high";
+}
+
+if(r.type === "medical"){
+priorityClass = "priority-medium";
+}
+
+let card = document.createElement("div");
+card.className = "alert";
+
+card.innerHTML = `
+
+<h3>${r.type.toUpperCase()} Alert</h3>
+
+<p><b>Reporter:</b> ${r.name}</p>
+
+<p><b>Location:</b> ${r.place}</p>
+
+<p><b>Description:</b> ${r.desc}</p>
+
+<p class="${priorityClass}">Priority Alert</p>
+
+<button class="dispatch-btn" onclick="dispatch('${r.type}')">
+Dispatch Help
+</button>
+
+`;
+
+container.prepend(card);
+
+});
+
+</script>
 
 </body>
 </html>
