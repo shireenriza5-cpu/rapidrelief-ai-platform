@@ -7,12 +7,11 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<!-- CSS LINK -->
 <link rel="stylesheet" href="style.css">
 
 <style>
 
-/* ===== BACKGROUND ===== */
+/* SAME DESIGN (UNCHANGED) */
 body{
 margin:0;
 font-family:Arial, sans-serif;
@@ -24,7 +23,6 @@ overflow-x:hidden;
 position:relative;
 }
 
-/* FLOATING SHAPES */
 body::before,
 body::after{
 content:"";
@@ -51,7 +49,6 @@ bottom:10%;
 right:5%;
 }
 
-/* NAVBAR */
 .navbar{
 display:flex;
 justify-content:space-between;
@@ -77,14 +74,12 @@ border-radius:6px;
 background:rgba(255,255,255,0.2);
 }
 
-/* TITLE */
 h2{
 text-align:center;
 margin-top:25px;
 color:#1c1e21;
 }
 
-/* FORM */
 .form{
 width:380px;
 margin:40px auto;
@@ -132,11 +127,6 @@ font-weight:bold;
 cursor:pointer;
 }
 
-.form button:hover{
-transform:translateY(-2px);
-}
-
-/* SUCCESS */
 .success{
 text-align:center;
 color:green;
@@ -151,43 +141,37 @@ display:none;
 
 <body>
 
-<!-- NAVBAR -->
 <div class="navbar">
-
 <h2>🚨 RapidRelief</h2>
-
 <div>
 <a href="index.html">Home</a>
 <a href="report.html">Report</a>
 <a href="map.html">Map</a>
 <a href="dashboard.html">Dashboard</a>
 </div>
-
 </div>
 
 <h2>Emergency Reporting Interface</h2>
 
-<!-- FORM -->
 <form class="form" onsubmit="submitReport(event)">
 
 <label>Name</label>
-<input type="text" id="name" placeholder="Enter your name" required>
+<input type="text" id="name" required>
 
 <label>Place</label>
-<input type="text" id="place" placeholder="Enter location" required>
+<input type="text" id="place" required>
 
 <label>Emergency Type</label>
 <select id="type">
-<option>Accident</option>
-<option>Medical</option>
-<option>Fire</option>
-<option>Disaster</option>
-<option>Shelter</option>
-<option>Food</option>
+<option value="accident">Accident</option>
+<option value="medical">Medical</option>
+<option value="fire">Fire</option>
+<option value="food">Food</option>
+<option value="shelter">Shelter</option>
 </select>
 
 <label>Description</label>
-<textarea id="desc" placeholder="Describe emergency"></textarea>
+<textarea id="desc"></textarea>
 
 <button type="submit">Submit Emergency</button>
 
@@ -197,8 +181,53 @@ display:none;
 
 </form>
 
-<!-- JS -->
 <script src="script.js"></script>
+
+<script>
+
+//////////////////////////////////////////////////
+// 🚀 SUBMIT REPORT (CONNECTED TO MAP)
+//////////////////////////////////////////////////
+
+function submitReport(e){
+    e.preventDefault();
+
+    let name = document.getElementById("name").value;
+    let place = document.getElementById("place").value;
+    let type = document.getElementById("type").value;
+    let desc = document.getElementById("desc").value;
+
+    // Convert place → coordinates (TEMP RANDOM for hackathon demo)
+    let userLocation = [
+        28.5 + Math.random()*0.3,
+        77.1 + Math.random()*0.3
+    ];
+
+    // Save to localStorage (so map page can read)
+   let report = { name, place, type, desc, userLocation };
+
+// GET OLD REPORTS
+let reports = JSON.parse(localStorage.getItem("reports")) || [];
+
+// ADD NEW REPORT
+reports.push(report);
+
+// SAVE ALL REPORTS
+localStorage.setItem("reports", JSON.stringify(reports));
+
+// SAVE LATEST REPORT FOR MAP
+localStorage.setItem("latestReport", JSON.stringify(report));
+
+    // Show success
+    document.getElementById("successMsg").style.display = "block";
+
+    // Redirect to map after 1.5 sec
+    setTimeout(()=>{
+        window.location.href = "map.html";
+    },1500);
+}
+
+</script>
 
 </body>
 </html>
