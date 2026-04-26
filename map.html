@@ -1,58 +1,57 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
 <meta charset="UTF-8">
 <title>RapidRelief Emergency Map</title>
 
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<!-- CSS -->
 <link rel="stylesheet" href="style.css">
 
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+<link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.css"/>
+
 <style>
-body {
-  margin: 0;
-  font-family: Arial;
-}
+body { margin:0; font-family:Arial; }
 
 .navbar {
-  background: #111;
-  color: white;
-  padding: 15px;
-  display: flex;
-  justify-content: space-between;
+  background:#111;
+  color:white;
+  padding:15px;
+  display:flex;
+  justify-content:space-between;
 }
 
 .navbar a {
-  color: white;
-  margin-left: 15px;
-  text-decoration: none;
+  color:white;
+  margin-left:15px;
+  text-decoration:none;
 }
 
 #map {
-  height: 85vh;
-  width: 100%;
+  height:90vh;
+  width:100%;
 }
 
-/* Info Box */
 .info-box {
-  position: absolute;
-  top: 80px;
-  left: 15px;
-  background: white;
-  padding: 12px;
-  border-radius: 10px;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-  z-index: 5;
-  width: 220px;
-  font-size: 14px;
+  position:absolute;
+  top:80px;
+  left:15px;
+  background:white;
+  padding:12px;
+  border-radius:10px;
+  z-index:500;
+  width:230px;
+  font-size:14px;
+  color:black;
+  box-shadow:0 5px 15px rgba(0,0,0,0.3);
 }
 </style>
 </head>
 
 <body>
 
-<!-- NAVBAR -->
 <div class="navbar">
   <h2>🗺 RapidRelief Map</h2>
   <div>
@@ -62,112 +61,195 @@ body {
   </div>
 </div>
 
-<!-- INFO BOX -->
-<div class="info-box">
-  <b>🚨 Nearby Help Status</b><br><br>
-  🚑 Ambulance: 4 min<br>
-  🏥 Hospital: 7 min<br>
-  🚒 Fire Truck: 6 min<br>
-  🤝 NGO: 5 min<br>
+<div class="info-box" id="infoBox">
+  <b>🚨 AI Response Status</b><br><br>
+  Waiting for report...
 </div>
 
-<!-- MAP -->
 <div id="map"></div>
 
-<!-- MAIN SCRIPT -->
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.js"></script>
+
 <script>
-function initMap() {
 
-  const userLocation = { lat: 28.6139, lng: 77.2090 };
+/////////////////////////////
+// MAP INIT
+/////////////////////////////
 
-  const map = new google.maps.Map(document.getElementById("map"), {
-    zoom: 13,
-    center: userLocation
-  });
+var map = L.map('map').setView([28.6139, 77.2090], 12);
 
-  // USER MARKER
-  new google.maps.Marker({
-    position: userLocation,
-    map: map,
-    title: "You are here",
-    icon: "https://maps.google.com/mapfiles/ms/icons/blue-dot.png"
-  });
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
 
-  // SERVICES DATA (merged from both codes)
-  const services = [
-    {
-      name: "City Hospital",
-      type: "Hospital",
-      pos: { lat: 28.6200, lng: 77.2300 },
-      eta: "7 min",
-      icon: "https://maps.google.com/mapfiles/ms/icons/red-dot.png"
-    },
-    {
-      name: "Ambulance Unit A1",
-      type: "Ambulance",
-      pos: { lat: 28.6100, lng: 77.2000 },
-      eta: "4 min",
-      icon: "https://maps.google.com/mapfiles/ms/icons/green-dot.png"
-    },
-    {
-      name: "Fire Station",
-      type: "Fire",
-      pos: { lat: 28.6000, lng: 77.2150 },
-      eta: "6 min",
-      icon: "https://maps.google.com/mapfiles/ms/icons/orange-dot.png"
-    },
-    {
-      name: "Police Station",
-      type: "Police",
-      pos: { lat: 28.6150, lng: 77.2050 },
-      eta: "5 min",
-      icon: "https://maps.google.com/mapfiles/ms/icons/yellow-dot.png"
-    },
-    {
-      name: "Red Cross NGO",
-      type: "NGO",
-      pos: { lat: 28.6250, lng: 77.2100 },
-      eta: "5 min",
-      icon: "https://maps.google.com/mapfiles/ms/icons/purple-dot.png"
-    }
-  ];
+/////////////////////////////
+// ICONS
+/////////////////////////////
 
-  // ADD MARKERS WITH INFO WINDOWS
-  services.forEach(service => {
+const icons = {
+  user: L.icon({ iconUrl:'https://maps.google.com/mapfiles/ms/icons/blue-dot.png', iconSize:[32,32]}),
+  ambulance: L.icon({ iconUrl:'https://maps.google.com/mapfiles/ms/icons/red-dot.png', iconSize:[32,32]}),
+  police: L.icon({ iconUrl:'https://maps.google.com/mapfiles/ms/icons/yellow-dot.png', iconSize:[32,32]}),
+  fire: L.icon({ iconUrl:'https://maps.google.com/mapfiles/ms/icons/orange-dot.png', iconSize:[32,32]}),
+  ngo: L.icon({ iconUrl:'https://maps.google.com/mapfiles/ms/icons/purple-dot.png', iconSize:[32,32]})
+};
 
-    const marker = new google.maps.Marker({
-      position: service.pos,
-      map: map,
-      title: service.name,
-      icon: service.icon
-    });
+/////////////////////////////
+// MULTIPLE RESOURCES (REALISTIC)
+/////////////////////////////
 
-    const infoWindow = new google.maps.InfoWindow({
-      content: `
-        <div style="font-family:Arial;">
-          <h3>${service.name}</h3>
-          <p>Type: ${service.type}</p>
-          <b>⏱ Arrival Time: ${service.eta}</b>
-        </div>
-      `
-    });
+const ambulances = [
+  [28.70,77.10],
+  [28.65,77.20],
+  [28.60,77.18]
+];
 
-    marker.addListener("click", () => {
-      infoWindow.open(map, marker);
-    });
+const policeUnits = [
+  [28.53,77.39],
+  [28.55,77.30]
+];
 
-  });
+const fireStations = [
+  [28.45,77.02],
+  [28.48,77.05]
+];
 
+const ngos = [
+  [28.40,77.31],
+  [28.42,77.28]
+];
+
+/////////////////////////////
+// DISTANCE + ETA CALC
+/////////////////////////////
+
+function getDistance(a,b){
+  return map.distance(a,b)/1000; // km
 }
-</script>
 
-<!-- GOOGLE MAPS API (ONLY ONCE) -->
-<script async defer
-src="https://maps.googleapis.com/maps/api/js?AIzaSyAitUqIl09ZDMD7zzLI3NAfdpj5WvgbjeE&callback=initMap">
-</script>
+function getETA(distance){
+  let speed = 40; // km/h (city avg)
+  let time = (distance/speed)*60; // minutes
+  return Math.round(time);
+}
 
-<!-- OPTIONAL JS FILE -->
-<script src="script.js"></script>
+/////////////////////////////
+// FIND NEAREST
+/////////////////////////////
+
+function findNearest(list, user){
+  let minDist = Infinity;
+  let nearest = null;
+
+  list.forEach(loc=>{
+    let d = getDistance(user, loc);
+    if(d < minDist){
+      minDist = d;
+      nearest = loc;
+    }
+  });
+
+  return {nearest, distance:minDist};
+}
+
+/////////////////////////////
+// ROUTE + MOVEMENT
+/////////////////////////////
+
+let routeControl = null;
+let movingMarker = null;
+
+function showRoute(start, end, icon, label){
+
+  if(routeControl){
+    map.removeControl(routeControl);
+  }
+
+  if(movingMarker){
+    map.removeLayer(movingMarker);
+  }
+
+  movingMarker = L.marker(start, {icon}).addTo(map);
+
+  routeControl = L.Routing.control({
+    waypoints:[L.latLng(start), L.latLng(end)],
+    createMarker:()=>null,
+    addWaypoints:false,
+    draggableWaypoints:false,
+    show:false
+  }).addTo(map);
+
+  routeControl.on('routesfound', function(e){
+
+    let route = e.routes[0];
+    let coords = route.coordinates;
+
+    let distance = route.summary.totalDistance / 1000;
+    let time = Math.round(route.summary.totalTime / 60);
+
+    document.getElementById("infoBox").innerHTML =
+    `<b>🚨 ${label} Dispatched</b><br><br>
+     📏 Distance: ${distance.toFixed(2)} km<br>
+     ⏱ ETA: ${time} minutes<br>
+     🚑 AI Optimized Route Active`;
+
+    let i=0;
+
+    let interval = setInterval(()=>{
+      if(i>=coords.length){
+        clearInterval(interval);
+        return;
+      }
+      movingMarker.setLatLng([coords[i].lat, coords[i].lng]);
+      i++;
+    },40);
+
+  });
+}
+
+/////////////////////////////
+// HANDLE REPORT
+/////////////////////////////
+
+function handleReport(type, user){
+
+  L.marker(user, {icon:icons.user}).addTo(map);
+  map.setView(user,13);
+
+  if(type==="medical"){
+    let res = findNearest(ambulances, user);
+    showRoute(res.nearest, user, icons.ambulance, "Ambulance");
+  }
+
+  else if(type==="accident"){
+    let res = findNearest(policeUnits, user);
+    showRoute(res.nearest, user, icons.police, "Police");
+  }
+
+  else if(type==="fire"){
+    let res = findNearest(fireStations, user);
+    showRoute(res.nearest, user, icons.fire, "Fire Unit");
+  }
+
+  else if(type==="food" || type==="shelter"){
+    let res = findNearest(ngos, user);
+    showRoute(res.nearest, user, icons.ngo, "NGO Support");
+  }
+}
+
+/////////////////////////////
+// LOAD FROM REPORT
+/////////////////////////////
+
+window.onload = function(){
+
+  let data = JSON.parse(localStorage.getItem("latestReport"));
+
+  if(data){
+    handleReport(data.type, data.userLocation);
+  }
+};
+
+</script>
 
 </body>
 </html>
